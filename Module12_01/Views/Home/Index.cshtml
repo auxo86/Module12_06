@@ -1,0 +1,118 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Index</title>
+    <script src="~/Scripts/jquery-3.1.1.js"></script>
+    <script>
+        $(function () {
+            $("#btnlist").click(function () {
+                $("#list").empty();
+                $.ajax({
+                    type: "GET",
+                    url: "/api/course",
+                    success: function (data) {
+                        data.forEach(function (item) {
+                            $("#list").append($("<li>").text(item.Id + "---" + item.Name));
+                            ////也可以寫成下面的多行
+                            //var li = $("<li>"); //<li>
+                            //li.text(item.Id + "---" + item.Name); //<li>xxxx</li>
+                            //$("#list").append(li);
+                        });
+                        ////也可以寫成下面的JS迴圈
+                        //for (var i = 0; i < data.length; i++) {
+                        //    var li = $("<li>"); //<li>
+                        //    li.text(data[i].Id + "---" + data[i].Name); //<li>xxxx</li>
+                        //    $("#list").append(li);
+                        //}
+                    }
+
+                });
+
+            });
+            $("#btnGet").click(function () {
+                $.ajax({
+                    type: "GET",
+                    //有兩種GET，一種是沒參數傳回全部資料的，另外一種是有參數只回傳一筆的
+                    //$("#id").val()是取值函數要注意
+                    url: "@Url.Content("~/api/course/")" + $("#id").val(),
+                    success: function (data) {
+                        if (data == null)
+                            $("#name").val("查無資料!!");
+                        else
+                            $("#name").val(data.Name);
+                    }
+
+                }).fail(function (e) {
+                    console.log(e)
+                });
+            });
+ 
+
+            $("#btnInsert").click(function () {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Content("~/api/course")",
+                    //組query string
+                    data: $("#form1").serialize(),
+                    success: function () {
+                        alert("Insert Done...");
+                    }
+
+                });
+
+            });
+
+            $("#btnUpdate").click(function () {
+                $.ajax({
+                    type: "PUT",
+                    url: "@Url.Content("~/api/course")",
+                    //組query string
+                    data: $("#form1").serialize(),
+                    success: function () {
+                        alert("Update Done...");
+                    }
+                });
+            });
+
+            $("#btnDelete").click(function () {
+                $.ajax({
+                    type: "DELETE",
+                    //~/api/course/，尾巴的/不要忘記
+                    url: "@Url.Content("~/api/course/")" + $("#id").val(),
+                    //組query string
+                    data: $("#form1").serialize(),
+                    success: function () {
+                        alert("Delete Done...");
+                    }
+
+                });
+
+            });
+
+        });
+
+    </script>
+</head>
+<body>
+    <div>
+        <ul id="list"></ul>
+        <form id="form1">
+            Id: <input type="text" id="id" name="Id" /> <br />
+            Name: <input type="text" id="name" name="Name" /> <br />
+            <input type="button" id="btnlist" value="List" />
+            <input type="button" id="btnGet" value="Get" />
+            <input type="button" id="btnInsert" value="Insert" />
+            <input type="button" id="btnUpdate" value="Update" />
+            <input type="button" id="btnDelete" value="Delete" />
+        </form>
+
+    </div>
+</body>
+</html>
